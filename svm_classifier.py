@@ -4,5 +4,5 @@ from sklearn import svm
 
 class GenericSVMClassifier(Backend):
     @staticmethod
-    def classifier():
+    def model():
         return svm.LinearSVC()
