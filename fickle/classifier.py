@@ -1,5 +1,4 @@
 from fickle import Backend
-
 from sklearn import svm
 
 class GenericSVMClassifier(Backend):
