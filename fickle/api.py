@@ -38,7 +38,7 @@ def API(name, backend):
         data = backend.validate()
         return Response(data)
 
-    @app.route('/predict', methods=['PUT'])
+    @app.route('/predict', methods=['POST'])
     def api_predict():
         if not backend.trained():
             return ErrorResponse()
