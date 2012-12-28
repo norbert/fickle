@@ -2,17 +2,17 @@ import sklearn.cross_validation
 
 class Backend(object):
     def __init__(self):
-        self.__dataset_id = 0
+        self.dataset_id = 0
         self.__random_id = 0
         self.__dataset = None
         self.__model = None
 
     def load(self, dataset):
         self.__model = None
-        self.__dataset_id += 1
+        self.dataset_id += 1
         self.__dataset = dataset
-        self._data = dataset['data']
-        self._target = dataset['target']
+        self.__data = dataset['data']
+        self.__target = dataset['target']
         return True
 
     def loaded(self):
@@ -22,7 +22,7 @@ class Backend(object):
         if not self.loaded():
             return False
         model = self.model()
-        model.fit(self._data, self._target)
+        model.fit(self.__data, self.__target)
         self.__model = model
         return True
 
@@ -42,7 +42,7 @@ class Backend(object):
             random_state = self.__random_id
         model = self.model()
         X_train, X_test, y_train, y_test = sklearn.cross_validation.train_test_split(
-            self._data, self._target, test_size = test_size, random_state = self.__random_id
+            self.__data, self.__target, test_size = test_size, random_state = self.__random_id
         )
         model.fit(X_train, y_train)
         return [model.score(X_test, y_test)]
