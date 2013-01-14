@@ -31,7 +31,7 @@ def API(name, backend):
         backend.fit()
         return SuccessResponse(backend.dataset_id)
 
-    @app.route('/validate', methods=['PUT'])
+    @app.route('/validate', methods=['POST'])
     def api_validate():
         if not backend.loaded():
             return ErrorResponse()
