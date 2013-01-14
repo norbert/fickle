@@ -51,8 +51,6 @@ class Backend(object):
         if not self.loaded():
             return
         self.__random_id += 1
-        if random_state is None:
-            random_state = self.__random_id
         model = self.model()
         X_train, X_test, y_train, y_test = sklearn.cross_validation.train_test_split(
             self.__data, self.__target, test_size = None, random_state = self.__random_id
