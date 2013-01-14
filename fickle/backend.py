@@ -40,10 +40,10 @@ class Backend(object):
         return True
 
     def trained(self):
-        return bool(self.__model)
+        return bool(self.__model) or bool(self.__load())
 
     def predict(self, value):
-        if not self.trained() and not self.__load():
+        if not self.trained():
             return
         return self.__model.predict(value)
 
