@@ -6,15 +6,18 @@ from flask import request, json
 
 USERNAME = 'fickle'
 
-def Response(data, status = 200):
-    body = json.dumps(data)
+def Response(data = None, status = 200):
+    if data:
+        body = json.dumps(data)
+    else:
+        body = None
     return flask.Response(body, status = status, mimetype = 'application/json')
 
 def SuccessResponse(dataset_id = None):
     return Response({ 'success': True, 'id': dataset_id })
 
 def ErrorResponse(status = 400):
-    return Response({ 'success': False }, status = status)
+    return Response(status = status)
 
 def check_auth(username, password):
     setting = os.environ.get('FICKLE_PASSWORD')
