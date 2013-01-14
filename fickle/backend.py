@@ -47,7 +47,7 @@ class Backend(object):
             return
         return self.__model.predict(value)
 
-    def validate(self, test_size = 0.2, random_state = None):
+    def validate(self):
         if not self.loaded():
             return
         self.__random_id += 1
@@ -55,7 +55,7 @@ class Backend(object):
             random_state = self.__random_id
         model = self.model()
         X_train, X_test, y_train, y_test = sklearn.cross_validation.train_test_split(
-            self.__data, self.__target, test_size = test_size, random_state = self.__random_id
+            self.__data, self.__target, test_size = None, random_state = self.__random_id
         )
         model.fit(X_train, y_train)
         return [model.score(X_test, y_test)]
