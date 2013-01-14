@@ -24,6 +24,8 @@ def check_auth(username, password):
         return True
 
 def requires_auth(f):
+    if not bool(os.environ.get('FICKLE_PASSWORD')):
+        return f
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
