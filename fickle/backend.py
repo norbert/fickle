@@ -53,7 +53,7 @@ class Backend(object):
         self.__random_id += 1
         model = self.model()
         X_train, X_test, y_train, y_test = sklearn.cross_validation.train_test_split(
-            self.__data, self.__target, test_size = None, random_state = self.__random_id
+            self.__data, self.__target, random_state = self.__random_id
         )
         model.fit(X_train, y_train)
         return [model.score(X_test, y_test)]
