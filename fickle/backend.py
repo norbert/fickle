@@ -1,16 +1,12 @@
 import os
 import pickle
-import pylibmc
+import redis
 
 import sklearn.cross_validation
 
 CACHE_KEY = 'fickle:predictor'
-CACHE = pylibmc.Client(
-        servers = [os.environ.get('MEMCACHE_SERVERS', '127.0.0.1')],
-        username=os.environ.get('MEMCACHE_USERNAME'),
-        password=os.environ.get('MEMCACHE_PASSWORD'),
-        binary=True
-)
+CACHE_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+CACHE = redis.from_url(CACHE_URL)
 
 class Backend(object):
     def __init__(self):
