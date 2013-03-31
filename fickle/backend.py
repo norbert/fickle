@@ -45,6 +45,11 @@ class Backend(object):
             return
         return self.__model.predict(value)
 
+    def predict_probabilities(self, value):
+        if not self.trained():
+            return
+        return self.__model.predict_proba(value)
+
     def validate(self):
         if not self.loaded():
             return

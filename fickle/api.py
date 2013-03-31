@@ -78,4 +78,12 @@ def API(name, backend):
         data = backend.predict(request.json).tolist()
         return Response(data)
 
+    @app.route('/predict/probabilities', methods=['POST'])
+    @requires_auth
+    def api_predict_probabilities():
+        if not backend.trained():
+            return ErrorResponse()
+        data = backend.predict_probabilities(request.json).tolist()
+        return Response(data)
+
     return app
