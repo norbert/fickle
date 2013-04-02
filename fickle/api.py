@@ -1,3 +1,5 @@
+__all__ = ['API']
+
 import os
 from functools import wraps
 

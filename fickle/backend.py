@@ -1,3 +1,5 @@
+__all__ = ['Backend']
+
 import os
 import pickle
 import redis

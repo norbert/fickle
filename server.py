@@ -1,6 +1,6 @@
 from fickle import API
 
-from fickle.classifier import GenericSVMClassifier
+from fickle.classifier import *
 backend = GenericSVMClassifier()
 
 app = API(__name__, backend)

@@ -1,3 +1,5 @@
+__all__ = ['GenericSVMClassifier']
+
 from fickle import Backend
 from sklearn import svm
 
