@@ -21,27 +21,28 @@ def SuccessResponse(dataset_id = None):
 def ErrorResponse(status = 400):
     return Response(status = status)
 
-def check_auth(username, password):
-    setting = os.environ.get('FICKLE_PASSWORD')
-    if setting:
-        return username == USERNAME and password == setting
-    else:
-        return True
-
-def requires_auth(f):
-    if not bool(os.environ.get('FICKLE_PASSWORD')):
-        return f
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return ErrorResponse(403)
-        return f(*args, **kwargs)
-    return decorated
-
 def API(name, backend):
     app = flask.Flask(name)
-    app.config.from_object(name)
+    app.config['DEBUG'] = bool(os.environ.get('FICKLE_DEBUG'))
+
+    __password = os.environ.get('FICKLE_PASSWORD')
+
+    def check_auth(username, password):
+        if __password:
+            return username == USERNAME and password == __password
+        else:
+            return True
+
+    def requires_auth(f):
+        if not __password:
+            return f
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            auth = request.authorization
+            if not auth or not check_auth(auth.username, auth.password):
+                return ErrorResponse(403)
+            return f(*args, **kwargs)
+        return decorated
 
     @app.route('/')
     @requires_auth
