@@ -3,6 +3,7 @@ Flask-Testing
 distribute==0.6.24
 gunicorn
 mock
+hiredis
 nose
 numpy==1.7.0
 redis
