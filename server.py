@@ -1,12 +1,9 @@
 from fickle import API
 
-from fickle.classifier import *
-backend = GenericSVMClassifier()
-
-app = API(__name__, backend)
+app = API(__name__)
 
 if __name__ == '__main__':
     import os
     host = '0.0.0.0'
     port = int(os.environ.get('PORT', 5000))
-    app.run(host = host, port = port)
+    app.run(host=host, port=port)

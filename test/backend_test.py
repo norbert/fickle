@@ -2,7 +2,9 @@ from fickle.testing import TestCase
 from fickle.classifier import GenericSVMClassifier as Backend
 from sklearn import datasets
 
+
 class BackendTest(TestCase):
+
     def test_init(self):
         backend = Backend()
         self.assertEqual(backend.dataset_id, 0)

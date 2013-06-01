@@ -6,76 +6,78 @@ import redis
 
 import sklearn.cross_validation
 
-CACHE_KEY = 'fickle:predictor'
+CACHE_KEY = 'fickle:model'
 CACHE_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
 CACHE = redis.from_url(CACHE_URL)
 
+
 class Backend(object):
+
     def __init__(self):
         self.dataset_id = 0
-        self.__random_id = 0
-        self.__dataset = None
-        self.__model = None
+        self._random_id = 0
+        self._dataset = None
+        self._model = None
 
     def load(self, dataset):
-        self.__model = None
+        self._model = None
         self.dataset_id += 1
-        self.__dataset = dataset
-        self.__data = dataset['data']
-        self.__target = dataset['target']
+        self._dataset = dataset
+        self._data = dataset['data']
+        self._target = dataset.get('target')
         return True
 
     def loaded(self):
-        return bool(self.__dataset)
+        return self.dataset_id > 0
 
     def fit(self):
         if not self.loaded():
             return
         model = self.model()
-        model.fit(self.__data, self.__target)
-        self.__model = model
-        self.__dump()
+        model.fit(self._data, self._target)
+        self._model = model
+        self._dump()
         return True
 
     def trained(self):
-        return bool(self.__model) or bool(self.__load())
+        return bool(self._model) or bool(self._load())
 
     def predict(self, value):
         if not self.trained():
             return
-        return self.__model.predict(value)
+        return self._model.predict(value).tolist()
 
     def predict_probabilities(self, value):
         if not self.trained():
             return
-        return self.__model.predict_proba(value)
+        return self._model.predict_proba(value).tolist()
 
     def validate(self):
         if not self.loaded():
             return
         model = self.model()
         X_train, X_test, y_train, y_test = sklearn.cross_validation.train_test_split(
-            self.__data, self.__target, random_state = self.random_id(True)
+            self._data, self._target, random_state=self.random_id(True)
         )
         model.fit(X_train, y_train)
         return [model.score(X_test, y_test)]
 
-    def random_id(self, increment = False):
+    def random_id(self, increment=False):
         if bool(increment):
-            self.__random_id += 1
-        return self.__random_id
+            self._random_id += 1
+        return self._random_id
 
-    def __load(self):
+    def _load(self):
         string = CACHE.get(CACHE_KEY)
         if not string:
             return
         model = pickle.loads(string)
-        self.__model = model
+        self._model = model
         return True
 
-    def __dump(self):
+    def _dump(self):
         if not self.trained():
             return
-        string = pickle.dumps(self.__model)
+        string = pickle.dumps(self._model)
         CACHE.set(CACHE_KEY, string)
         return True

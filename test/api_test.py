@@ -6,10 +6,12 @@ from fickle.api import API
 from fickle.classifier import GenericSVMClassifier as Backend
 from sklearn import datasets
 
+
 class APITest(FlaskTestCase, FickleTestCase):
+
     def create_app(self):
         self.backend = Backend()
-        app = API(__name__, self.backend)
+        app = API(__name__, backend=self.backend)
         app.config['TESTING'] = True
         return app
 
@@ -23,14 +25,14 @@ class APITest(FlaskTestCase, FickleTestCase):
         return self.client.post(*args, **kwargs)
 
     def load(self, dataset):
-        return self.post('/load', data = {
+        return self.post('/load', data={
             'data': dataset.data.tolist(),
             'target': dataset.target.tolist()
         })
 
     def assert_success(self, response, _id):
         self.assert200(response)
-        value = { 'id': _id, 'success': True }
+        value = {'id': _id, 'success': True}
         self.assertEqual(response.json, value)
 
     def test_root(self):
@@ -68,7 +70,7 @@ class APITest(FlaskTestCase, FickleTestCase):
         self.load(dataset)
         self.post('/fit')
         sample = dataset['data'][:10]
-        response = self.post('/predict', data = sample.tolist())
+        response = self.post('/predict', data=sample.tolist())
         self.assert200(response)
         self.assertEqual(len(response.json), 10)
-        self.assertEqual(response.json, self.backend.predict(sample).tolist())
+        self.assertEqual(response.json, self.backend.predict(sample))

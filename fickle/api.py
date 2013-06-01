@@ -6,24 +6,35 @@ from functools import wraps
 import flask
 from flask import request, json
 
+import models
+
 USERNAME = 'fickle'
 
-def Response(data = None, status = 200):
+
+def Response(data=None, status=200):
     if data:
         body = json.dumps(data)
     else:
         body = None
-    return flask.Response(body, status = status, mimetype = 'application/json')
+    return flask.Response(body, status=status, mimetype='application/json')
 
-def SuccessResponse(dataset_id = None):
-    return Response({ 'success': True, 'id': dataset_id })
 
-def ErrorResponse(status = 400):
-    return Response(status = status)
+def SuccessResponse(dataset_id=None):
+    return Response({'success': True, 'id': dataset_id})
 
-def API(name, backend):
+
+def ErrorResponse(status=400):
+    return Response(status=status)
+
+
+def API(name, backend=None):
     app = flask.Flask(name)
     app.config['DEBUG'] = bool(os.environ.get('FICKLE_DEBUG'))
+
+    if backend is None:
+        model = getattr(models,
+                        os.environ.get('FICKLE_MODEL', 'GenericSVMClassifier'))
+        backend = model()
 
     __password = os.environ.get('FICKLE_PASSWORD')
 
@@ -36,6 +47,7 @@ def API(name, backend):
     def requires_auth(f):
         if not __password:
             return f
+
         @wraps(f)
         def decorated(*args, **kwargs):
             auth = request.authorization
@@ -69,6 +81,8 @@ def API(name, backend):
         if not backend.loaded():
             return ErrorResponse()
         data = backend.validate()
+        if data is None:
+            return ErrorResponse()
         return Response(data)
 
     @app.route('/predict', methods=['POST'])
@@ -76,7 +90,9 @@ def API(name, backend):
     def api_predict():
         if not backend.trained():
             return ErrorResponse()
-        data = backend.predict(request.json).tolist()
+        data = backend.predict(request.json)
+        if data is None:
+            return ErrorResponse()
         return Response(data)
 
     @app.route('/predict/probabilities', methods=['POST'])
@@ -84,7 +100,9 @@ def API(name, backend):
     def api_predict_probabilities():
         if not backend.trained():
             return ErrorResponse()
-        data = backend.predict_probabilities(request.json).tolist()
+        if data is None:
+            return ErrorResponse()
+        data = backend.predict_probabilities(request.json)
         return Response(data)
 
     return app
