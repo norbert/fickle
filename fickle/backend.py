@@ -2,6 +2,7 @@ __all__ = ['Backend']
 
 import os
 import pickle
+import zlib
 import redis
 
 import sklearn.cross_validation
@@ -71,13 +72,13 @@ class Backend(object):
         string = CACHE.get(CACHE_KEY)
         if not string:
             return
-        model = pickle.loads(string)
+        model = pickle.loads(zlib.decompress(string))
         self._model = model
         return True
 
     def _dump(self):
         if not self.trained():
             return
-        string = pickle.dumps(self._model)
+        string = zlib.compress(pickle.dumps(self._model))
         CACHE.set(CACHE_KEY, string)
         return True
