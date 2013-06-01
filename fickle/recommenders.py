@@ -1,20 +1,13 @@
-__all__ = ['GenericSVMClassifier', 'NearestNeighbors']
+__all__ = ['NearestNeighborsRecommender']
 
 import numpy as np
 import scipy.sparse as sp
-from sklearn import svm, neighbors, preprocessing
+from sklearn import neighbors, preprocessing
 
 from fickle.backend import Backend
 
 
-class GenericSVMClassifier(Backend):
-
-    @staticmethod
-    def model():
-        return svm.LinearSVC()
-
-
-class NearestNeighbors(Backend):
+class NearestNeighborsRecommender(Backend):
 
     @staticmethod
     def model():

@@ -6,7 +6,10 @@ from functools import wraps
 import flask
 from flask import request, json
 
-import models
+import predictors
+import recommenders
+
+models = (predictors, recommenders)
 
 USERNAME = 'fickle'
 
@@ -32,8 +35,9 @@ def API(name, backend=None):
     app.config['DEBUG'] = bool(os.environ.get('FICKLE_DEBUG'))
 
     if backend is None:
-        model = getattr(models,
-                        os.environ.get('FICKLE_MODEL', 'GenericSVMClassifier'))
+        __model = os.environ.get('FICKLE_MODEL', 'GenericSVMClassifier')
+        model = next((getattr(m, __model) for m in models
+                      if hasattr(m, __model)))
         backend = model()
 
     __password = os.environ.get('FICKLE_PASSWORD')
