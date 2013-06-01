@@ -37,9 +37,14 @@ class UserItemRecommender(Backend):
     def predict(self, value):
         if not self.trained():
             return
-        if len(value) is not 1:
+        if len(value) < 1:
             return
-        return self._model.recommend(value[0], how_many=HOW_MANY)
+        def recommend(key):
+            try:
+                return self._model.recommend(key, how_many=HOW_MANY)
+            except:
+                pass
+        return map(recommend, value)
 
     def predict_probabilities(self, value):
         pass
