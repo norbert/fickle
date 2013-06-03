@@ -1,3 +1,3 @@
 # Fickle
 
-Experimental scikit-learn HTTP API.
+Experimental machine learning HTTP API.
