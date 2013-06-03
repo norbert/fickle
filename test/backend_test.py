@@ -1,6 +1,7 @@
-from fickle.testing import TestCase
-from fickle.classifier import GenericSVMClassifier as Backend
 from sklearn import datasets
+
+from fickle.testing import TestCase
+from fickle.predictors import GenericSVMClassifier as Backend
 
 
 class BackendTest(TestCase):
@@ -28,7 +29,8 @@ class BackendTest(TestCase):
 
     def test_fit_when_not_loaded(self):
         backend = Backend()
-        self.assertEqual(backend.fit(), None)
+        with self.assertRaises(RuntimeError):
+            backend.fit()
 
     def test_fit_when_loaded(self):
         backend = Backend()
@@ -51,7 +53,7 @@ class BackendTest(TestCase):
         old_backend.load(dataset)
         old_backend.fit()
         new_backend = Backend()
-        self.assertTrue(new_backend.trained())
+        self.assertTrue(new_backend.trained(load=True))
 
     def test_predict_when_trained(self):
         backend = Backend()

@@ -1,10 +1,11 @@
 __all__ = ['TestCase']
 
 import unittest
-from fickle import backend
+
+from cache import *
 
 
 class TestCase(unittest.TestCase):
 
     def setUp(self):
-        backend.CACHE.delete(backend.CACHE_KEY)
+        CACHE.delete(CACHE_KEY)

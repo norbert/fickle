@@ -1,12 +1,12 @@
 __all__ = ['GenericSVMClassifier']
 
-from sklearn import svm
+from sklearn.svm import LinearSVC
 
-from fickle.backend import Backend
+from backend import Backend
 
 
 class GenericSVMClassifier(Backend):
 
     @staticmethod
     def model():
-        return svm.LinearSVC()
+        return LinearSVC()

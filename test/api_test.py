@@ -1,10 +1,12 @@
-from flask.ext.testing import TestCase as FlaskTestCase
-from fickle.testing import TestCase as FickleTestCase
-from mock import Mock
 import json
-from fickle.api import API
-from fickle.classifier import GenericSVMClassifier as Backend
+
+from mock import Mock
+from flask.ext.testing import TestCase as FlaskTestCase
 from sklearn import datasets
+
+from fickle.testing import TestCase as FickleTestCase
+from fickle.api import API
+from fickle.predictors import GenericSVMClassifier as Backend
 
 
 class APITest(FlaskTestCase, FickleTestCase):
@@ -30,10 +32,11 @@ class APITest(FlaskTestCase, FickleTestCase):
             'target': dataset.target.tolist()
         })
 
-    def assert_success(self, response, _id):
-        self.assert200(response)
-        value = {'id': _id, 'success': True}
-        self.assertEqual(response.json, value)
+    def assert_success(self, response, _id, status=200):
+        self.assertEqual(response.status_code, status)
+
+    def assert_error(self, response, status=400):
+        self.assertEqual(response.status_code, status)
 
     def test_root(self):
         response = self.get('/')
@@ -42,12 +45,12 @@ class APITest(FlaskTestCase, FickleTestCase):
     def test_load(self):
         dataset = datasets.load_iris()
         response = self.load(dataset)
-        self.assert_success(response, 1)
+        self.assert_success(response, 1, status=201)
         self.assertTrue(self.backend.loaded())
 
     def test_fit_when_not_loaded(self):
         response = self.post('/fit')
-        self.assert400(response)
+        self.assert_error(response, status=501)
 
     def test_fit_when_loaded(self):
         dataset = datasets.load_iris()
