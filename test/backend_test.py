@@ -6,17 +6,11 @@ from fickle.predictors import GenericSVMClassifier as Backend
 
 class BackendTest(TestCase):
 
-    def test_init(self):
-        backend = Backend()
-        self.assertEqual(backend.dataset_id, 0)
-
     def test_load(self):
         backend = Backend()
         dataset = datasets.load_iris()
         self.assertTrue(backend.load(dataset))
-        self.assertEqual(backend.dataset_id, 1)
         self.assertTrue(backend.load(dataset))
-        self.assertEqual(backend.dataset_id, 2)
 
     def test_loaded(self):
         backend = Backend()

@@ -32,7 +32,7 @@ class APITest(FlaskTestCase, FickleTestCase):
             'target': dataset.target.tolist()
         })
 
-    def assert_success(self, response, _id, status=200):
+    def assert_success(self, response, status=200):
         self.assertEqual(response.status_code, status)
 
     def assert_error(self, response, status=400):
@@ -40,12 +40,12 @@ class APITest(FlaskTestCase, FickleTestCase):
 
     def test_root(self):
         response = self.get('/')
-        self.assert_success(response, 0)
+        self.assert_success(response)
 
     def test_load(self):
         dataset = datasets.load_iris()
         response = self.load(dataset)
-        self.assert_success(response, 1, status=201)
+        self.assert_success(response, status=201)
         self.assertTrue(self.backend.loaded())
 
     def test_fit_when_not_loaded(self):
@@ -56,7 +56,7 @@ class APITest(FlaskTestCase, FickleTestCase):
         dataset = datasets.load_iris()
         self.load(dataset)
         response = self.post('/fit')
-        self.assert_success(response, 1)
+        self.assert_success(response)
         self.assertTrue(self.backend.trained())
 
     def test_validate_when_loaded(self):
