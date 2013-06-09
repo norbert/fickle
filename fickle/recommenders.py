@@ -2,7 +2,7 @@ __all__ = ['UserItemRecommender']
 
 try:
     from recsys.datamodel.data import Data
-    from recsys.algorithm.factorize import SVD
+    from recsys.algorithm.factorize import SVDNeighbourhood
 except ImportError:
     pass
 
@@ -62,7 +62,7 @@ class UserItemRecommender(Recommender):
 
     @staticmethod
     def model(*args, **kwargs):
-        return SVD()
+        return SVDNeighbourhood()
 
     def fit(self, k=K):
         self._ensure_loaded()
