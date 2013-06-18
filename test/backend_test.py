@@ -47,7 +47,7 @@ class BackendTest(TestCase):
         old_backend.load(dataset)
         old_backend.fit()
         new_backend = Backend()
-        self.assertTrue(new_backend.trained(load=True))
+        self.assertTrue(new_backend.trained(read=True))
 
     def test_predict_when_trained(self):
         backend = Backend()

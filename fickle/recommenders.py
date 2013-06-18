@@ -3,7 +3,7 @@ __all__ = ['UserItemRecommender']
 from recsys.datamodel.data import Data
 from recsys.algorithm.factorize import SVD
 
-from backend import Backend
+from .backend import Backend
 
 K = 100
 MIN_VALUES = 2
@@ -12,10 +12,12 @@ N = 10
 
 class Recommender(Backend):
 
-    def load(self, dataset):
+    def load(self, dataset, write=None):
         self._model = None
         data = self._convert_hash(dataset['data'])
         self._data = data
+        if write:
+            pass
         return True
 
     def predict(self, keys):

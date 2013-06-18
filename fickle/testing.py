@@ -2,10 +2,11 @@ __all__ = ['TestCase']
 
 import unittest
 
-from cache import *
+from .storage import *
 
 
 class TestCase(unittest.TestCase):
 
     def setUp(self):
-        CACHE.delete(CACHE_KEY)
+        Redis.delete(MODEL_KEY)
+        Redis.delete(DATASET_KEY)

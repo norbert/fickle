@@ -6,8 +6,8 @@ import os
 import flask
 from flask import request, json
 
-import predictors
-import recommenders
+from . import predictors
+from . import recommenders
 
 models = (predictors, recommenders)
 
@@ -22,7 +22,7 @@ def Response(data=None, status=200):
     return flask.Response(body, status=status, mimetype='application/json')
 
 
-def SuccessResponse(status=200, dataset_id=None):
+def SuccessResponse(status=200):
     return Response(None, status=status)
 
 
@@ -68,7 +68,8 @@ def API(name, backend=None):
     @app.route('/load', methods=['POST'])
     @requires_auth
     def api_load():
-        backend.load(request.json)
+        write = bool(request.args.get('write', None))
+        backend.load(request.json, write=write)
         return SuccessResponse(status=201)
 
     @app.route('/fit', methods=['POST'])

@@ -1,11 +1,8 @@
 __all__ = ['Backend']
 
-import pickle
-import zlib
-
 from sklearn.cross_validation import train_test_split
 
-from cache import *
+from .storage import *
 
 
 class Backend(object):
@@ -15,38 +12,45 @@ class Backend(object):
         self._data = None
         self._model = None
 
-    def load(self, dataset):
+    def load(self, dataset, write=False):
         self._model = None
-        self._dataset = dataset
         self._data = dataset['data']
         self._target = dataset.get('target')
+        if write:
+            self._write_dataset(dataset)
         return True
 
-    def loaded(self):
-        return self._data is not None
+    def loaded(self, read=False):
+        if getattr(self, '_data', None) is not None:
+            return True
+        elif read:
+            return bool(self._read_dataset())
+        else:
+            return False
 
-    def fit(self):
-        self._ensure_loaded()
+    def fit(self, write=True):
+        self._ensure_loaded(read=True)
         model = self.model()
         model.fit(self._data, self._target)
         self._model = model
-        self._dump_model()
+        if write:
+            self._write_model()
         return True
 
-    def trained(self, load=False):
+    def trained(self, read=False):
         if getattr(self, '_model', None) is not None:
             return True
-        elif load:
-            return bool(self._load_model())
+        elif read:
+            return bool(self._read_model())
         else:
             return False
 
     def predict(self, value):
-        self._ensure_trained(load=True)
+        self._ensure_trained(read=True)
         return self._model.predict(value).tolist()
 
     def predict_probabilities(self, value):
-        self._ensure_trained(load=True)
+        self._ensure_trained(read=True)
         return self._model.predict_proba(value).tolist()
 
     def validate(self):
@@ -63,24 +67,29 @@ class Backend(object):
             self._random_id += 1
         return self._random_id
 
-    def _load_model(self):
-        string = CACHE.get(CACHE_KEY)
-        if not string:
+    def _read_dataset(self):
+        dataset = read_key(DATASET_KEY)
+        if dataset is not None:
+            self.load(dataset, write=False)
+        else:
             return False
-        model = pickle.loads(zlib.decompress(string))
-        self._model = model
-        return True
 
-    def _dump_model(self):
+    def _write_dataset(self, dataset):
         self._ensure_trained()
-        string = zlib.compress(pickle.dumps(self._model))
-        CACHE.set(CACHE_KEY, string)
-        return True
+        write_key(DATASET_KEY, dataset)
 
-    def _ensure_loaded(self):
-        if not self.loaded():
+    def _read_model(self):
+        self._model = read_key(MODEL_KEY)
+        return bool(self._model)
+
+    def _write_model(self):
+        self._ensure_trained()
+        write_key(MODEL_KEY, self._model)
+
+    def _ensure_loaded(self, read=False):
+        if not self.loaded(read):
             raise RuntimeError
 
-    def _ensure_trained(self, load=False):
-        if not self.trained(load=load):
+    def _ensure_trained(self, read=False):
+        if not self.trained(read):
             raise RuntimeError
