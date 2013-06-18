@@ -1,7 +1,10 @@
 __all__ = ['UserItemRecommender']
 
-from recsys.datamodel.data import Data
-from recsys.algorithm.factorize import SVD
+try:
+    from recsys.datamodel.data import Data
+    from recsys.algorithm.factorize import SVD
+except ImportError:
+    pass
 
 from .backend import Backend
 

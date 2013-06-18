@@ -9,4 +9,5 @@ before_install:
     - source ~/virtualenv/this/bin/activate
     - pip install -q --use-mirrors numpy
     - pip install -q --use-mirrors scipy
+install: pip install --use-mirrors -r requirements-devel.txt
 script: nosetests
