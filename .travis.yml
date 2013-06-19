@@ -7,7 +7,7 @@ before_install:
     - sudo apt-get install -qq gfortran libatlas-base-dev libatlas3gf-base
     - virtualenv --system-site-packages ~/virtualenv/this
     - source ~/virtualenv/this/bin/activate
-    - pip install -q --use-mirrors numpy
-    - pip install -q --use-mirrors scipy
+    - pip install --use-mirrors numpy
+    - pip install --use-mirrors scipy
 install: pip install --use-mirrors -r requirements-devel.txt
 script: nosetests
