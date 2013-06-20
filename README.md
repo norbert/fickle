@@ -20,6 +20,10 @@ All configuration is done using environment variables. The following variables a
 
 See `requirements.txt` for details.
 
+## Interface
+
+See [fickle-ruby](https://github.com/norbert/fickle-ruby) for details.
+
 ## Deployment
 
 ### Heroku
