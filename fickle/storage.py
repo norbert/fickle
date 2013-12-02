@@ -25,5 +25,5 @@ def read_key(key):
 
 
 def write_key(key, obj):
-    string = zlib.compress(pickle.dumps(obj))
+    string = zlib.compress(pickle.dumps(obj), 9)
     Redis.set(key, string)
