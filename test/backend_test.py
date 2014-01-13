@@ -10,16 +10,15 @@ class BackendTest(TestCase):
         backend = Backend()
         dataset = datasets.load_iris()
         self.assertTrue(backend.load(dataset))
-        self.assertTrue(backend.load(dataset))
 
-    def test_loaded(self):
+    def test_isloaded(self):
         backend = Backend()
         dataset = datasets.load_iris()
-        self.assertFalse(backend.loaded())
+        self.assertFalse(backend.isloaded())
         backend.load(dataset)
-        self.assertTrue(backend.loaded())
+        self.assertTrue(backend.isloaded())
         backend.load(dataset)
-        self.assertTrue(backend.loaded())
+        self.assertTrue(backend.isloaded())
 
     def test_fit_when_not_loaded(self):
         backend = Backend()
@@ -32,22 +31,22 @@ class BackendTest(TestCase):
         backend.load(dataset)
         self.assertTrue(backend.fit())
 
-    def test_trained_without_load(self):
+    def test_istrained_without_load(self):
         backend = Backend()
         dataset = datasets.load_iris()
-        self.assertFalse(backend.trained())
+        self.assertFalse(backend.istrained())
         backend.load(dataset)
-        self.assertFalse(backend.trained())
+        self.assertFalse(backend.istrained())
         backend.fit()
-        self.assertTrue(backend.trained())
+        self.assertTrue(backend.istrained())
 
-    def test_trained_with_load(self):
+    def test_istrained_with_load(self):
         old_backend = Backend()
         dataset = datasets.load_iris()
         old_backend.load(dataset)
         old_backend.fit()
         new_backend = Backend()
-        self.assertTrue(new_backend.trained(read=True))
+        self.assertTrue(new_backend.istrained(read=True))
 
     def test_predict_when_trained(self):
         backend = Backend()

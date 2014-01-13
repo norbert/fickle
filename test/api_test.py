@@ -46,7 +46,7 @@ class APITest(FlaskTestCase, FickleTestCase):
         dataset = datasets.load_iris()
         response = self.load(dataset)
         self.assert_success(response, status=201)
-        self.assertTrue(self.backend.loaded())
+        self.assertTrue(self.backend.isloaded())
 
     def test_fit_when_not_loaded(self):
         response = self.post('/fit')
@@ -57,7 +57,7 @@ class APITest(FlaskTestCase, FickleTestCase):
         self.load(dataset)
         response = self.post('/fit')
         self.assert_success(response)
-        self.assertTrue(self.backend.trained())
+        self.assertTrue(self.backend.istrained())
 
     def test_validate_when_loaded(self):
         dataset = datasets.load_iris()

@@ -20,7 +20,7 @@ class Backend(object):
             self._write_dataset(dataset)
         return True
 
-    def loaded(self, read=False):
+    def isloaded(self, read=False):
         if getattr(self, '_data', None) is not None:
             return True
         elif read:
@@ -37,7 +37,7 @@ class Backend(object):
             self._write_model()
         return True
 
-    def trained(self, read=False):
+    def istrained(self, read=False):
         if getattr(self, '_model', None) is not None:
             return True
         elif read:
@@ -87,9 +87,9 @@ class Backend(object):
         write_key(MODEL_KEY, self._model)
 
     def _ensure_loaded(self, read=False):
-        if not self.loaded(read):
+        if not self.isloaded(read):
             raise RuntimeError
 
     def _ensure_trained(self, read=False):
-        if not self.trained(read):
+        if not self.istrained(read):
             raise RuntimeError

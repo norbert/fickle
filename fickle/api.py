@@ -84,7 +84,7 @@ def API(name, backend=None):
     @app.route('/validate', methods=['POST'])
     @requires_auth
     def api_validate():
-        if not backend.loaded():
+        if not backend.isloaded():
             return ErrorResponse(status=501)
         data = backend.validate()
         return Response(data)

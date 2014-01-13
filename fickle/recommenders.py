@@ -29,7 +29,7 @@ class Recommender(Backend):
     def recommend(self, keys, n=None, unknown=True):
         if n is None:
             n = N
-        self._ensure_trained(load=True)
+        self._ensure_trained(read=True)
         if type(keys) not in (list, tuple):
             raise ValueError
         elif len(keys) < 1:
@@ -74,5 +74,5 @@ class UserItemRecommender(Recommender):
                       mean_center=True, post_normalize=True)
         model.set_data(Data())
         self._model = model
-        self._dump_model()
+        self._write_model()
         return True
