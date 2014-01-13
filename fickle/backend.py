@@ -8,7 +8,6 @@ from .storage import *
 class Backend(object):
 
     def __init__(self):
-        self._random_id = 0
         self._data = None
         self._model = None
 
@@ -52,20 +51,6 @@ class Backend(object):
     def predict_probabilities(self, value):
         self._ensure_trained(read=True)
         return self._model.predict_proba(value).tolist()
-
-    def validate(self):
-        self._ensure_loaded()
-        model = self.model()
-        X_train, X_test, y_train, y_test = train_test_split(
-            self._data, self._target, random_state=self.random_id(True)
-        )
-        model.fit(X_train, y_train)
-        return [model.score(X_test, y_test)]
-
-    def random_id(self, increment=False):
-        if bool(increment):
-            self._random_id += 1
-        return self._random_id
 
     def _read_dataset(self):
         dataset = read_key(DATASET_KEY)

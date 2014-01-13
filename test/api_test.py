@@ -59,15 +59,6 @@ class APITest(FlaskTestCase, FickleTestCase):
         self.assert_success(response)
         self.assertTrue(self.backend.istrained())
 
-    def test_validate_when_loaded(self):
-        dataset = datasets.load_iris()
-        self.load(dataset)
-        response = self.post('/validate')
-        self.assert200(response)
-        self.assertEqual(len(response.json), 1)
-        self.assertGreater(response.json[0], 0.8)
-        self.assertEqual(self.backend.random_id(), 1)
-
     def test_predict_when_trained(self):
         dataset = datasets.load_iris()
         self.load(dataset)

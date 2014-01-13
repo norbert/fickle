@@ -56,25 +56,3 @@ class BackendTest(TestCase):
         sample = dataset['data'][:10]
         predictions = backend.predict(sample)
         self.assertEqual(len(predictions), 10)
-
-    def test_predict_probabilities_when_trained(self):
-        backend = Backend()
-        dataset = datasets.load_iris()
-        backend.load(dataset)
-        backend.fit()
-        sample = dataset['data'][:10]
-        with self.assertRaises(AttributeError):
-            backend.predict_probabilities(sample)
-
-    def test_validate_when_loaded(self):
-        backend = Backend()
-        dataset = datasets.load_iris()
-        backend.load(dataset)
-        score1 = backend.validate()
-        self.assertEqual(len(score1), 1)
-        self.assertEqual(backend.random_id(), 1)
-        score2 = backend.validate()
-        self.assertEqual(backend.random_id(), 2)
-        self.assertNotEqual(score1[0], score2[0])
-        self.assertGreater(score1[0], 0.8)
-        self.assertGreater(score2[0], 0.8)

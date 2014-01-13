@@ -81,27 +81,11 @@ def API(name, backend=None):
             return ErrorResponse(status=501)
         return SuccessResponse()
 
-    @app.route('/validate', methods=['POST'])
-    @requires_auth
-    def api_validate():
-        if not backend.isloaded():
-            return ErrorResponse(status=501)
-        data = backend.validate()
-        return Response(data)
-
     @app.route('/predict', methods=['POST'])
     @requires_auth
     def api_predict():
-        return api_predict_method('predict')
-
-    @app.route('/predict/probabilities', methods=['POST'])
-    @requires_auth
-    def api_predict_probabilities():
-        return api_predict_method('predict_probabilities')
-
-    def api_predict_method(method):
         try:
-            data = getattr(backend, method)(request.json)
+            data = backend.predict(request.json)
         except RuntimeError:
             return ErrorResponse(status=501)
         return Response(data)
