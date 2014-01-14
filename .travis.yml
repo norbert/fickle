@@ -1,13 +1,10 @@
 language: python
 python:
     - "2.7"
+virtualenv:
+  system_site_packages: true
 before_install:
-    - deactivate
     - sudo apt-get update -qq
-    - sudo apt-get install -qq gfortran libatlas-base-dev libatlas3gf-base
-    - virtualenv --system-site-packages ~/virtualenv/this
-    - source ~/virtualenv/this/bin/activate
-    - pip install --use-mirrors numpy
-    - pip install --use-mirrors scipy
-install: pip install --use-mirrors -r requirements-devel.txt
+    - sudo apt-get install -qq python-numpy python-scipy
+install: pip install --use-mirrors --no-deps -r requirements-build.txt
 script: nosetests
